@@ -1,0 +1,37 @@
+﻿
+<div @attributes="AdditionalAttributes" class="@($"btn-group  {receivedClassAttribute} {dd.ButtonClass}")">
+    <CascadingValue Value="dd">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    private string receivedClassAttribute = "";
+    private DropDownManager dd = new DropDownManager();
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        dd.StateChanged += OnStateChanged;
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (AdditionalAttributes != null)
+            if (AdditionalAttributes.ContainsKey("class"))
+                receivedClassAttribute = AdditionalAttributes["class"].ToString();
+
+        base.OnParametersSet();
+    }
+
+    public async Task OnStateChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+}

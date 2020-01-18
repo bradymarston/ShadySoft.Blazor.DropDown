@@ -1,0 +1,32 @@
+﻿<button 
+        type="button" 
+        aria-haspopup="true" 
+        aria-expanded="@(DD.Open.ToString().ToLower())" 
+        @attributes="AdditionalAttributes"
+        class="@($"dropdown-toggle {receivedClassAttribute}")"
+        @onblur="DD.ButtonBlur"
+        @onclick="DD.ButtonClicked">
+    @ChildContent
+</button>
+
+@code {
+    private string receivedClassAttribute = "";
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [CascadingParameter]
+    protected DropDownManager DD { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (AdditionalAttributes != null)
+            if (AdditionalAttributes.ContainsKey("class"))
+                receivedClassAttribute = AdditionalAttributes["class"].ToString();
+
+        base.OnParametersSet();
+    }
+}
